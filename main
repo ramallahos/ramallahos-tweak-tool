@@ -1,0 +1,33 @@
+#!/bin/env bash
+
+stdbuf -oL -eL yad  --width='1070' --height='650' --borders=0 --center \
+					--title='Main Tweaks' \
+					--window-icon=/usr/share/icons/ramallahos.svg \
+					--no-buttons --no-escape \
+                    --html --uri="/usr/share/resources/ramallahos-tweak-tool/main.html" --uri-handler='firefox --new-tab %s'\
+                    --print-uri 2>&1 \
+| while read -r line; do
+     case ${line##*/} in
+      nix)                bash /usr/share/resources/ramallahos-tweak-tool/functions nix &                ;;
+      homebrew)           bash /usr/share/resources/ramallahos-tweak-tool/functions homebrew &           ;;
+      mirrors)            bash /usr/share/resources/ramallahos-tweak-tool/functions mirrors &            ;;
+      arcomirrors)        bash /usr/share/resources/ramallahos-tweak-tool/functions arcomirrors &        ;;
+      blackarch)          bash /usr/share/resources/ramallahos-tweak-tool/functions blackarch &          ;;
+      install_flatpaks)   bash /usr/share/resources/ramallahos-tweak-tool/functions install_flatpaks &   ;;
+      install_snaps)      bash /usr/share/resources/ramallahos-tweak-tool/functions install_snaps &      ;;
+      install_pipewire)   bash /usr/share/resources/ramallahos-tweak-tool/functions install_pipewire &   ;;
+      install_pulseaudio) bash /usr/share/resources/ramallahos-tweak-tool/functions install_pulseaudio & ;;
+      snapper)            bash /usr/share/resources/ramallahos-tweak-tool/functions snapper &            ;;
+      timeshift)          bash /usr/share/resources/ramallahos-tweak-tool/functions timeshift &          ;;
+      sudo_prompt)        bash /usr/share/resources/ramallahos-tweak-tool/functions sudo_prompt &        ;;
+      no_password)        bash /usr/share/resources/ramallahos-tweak-tool/functions no_password &        ;;
+      enable_fstrim)      bash /usr/share/resources/ramallahos-tweak-tool/functions enable_fstrim &      ;;
+      enable_zram)        bash /usr/share/resources/ramallahos-tweak-tool/functions enable_zram &        ;;
+      kde_media_lock_fix) bash /usr/share/resources/ramallahos-tweak-tool/functions kde_media_lock_fix & ;;
+      systemd_services)   bash /usr/share/resources/ramallahos-tweak-tool/functions systemd_services &   ;;
+      makepkg_conf)       bash /usr/share/resources/ramallahos-tweak-tool/functions makepkg_conf &       ;;
+      skel)               bash /usr/share/resources/ramallahos-tweak-tool/functions skel &               ;;
+      omf)                bash /usr/share/resources/ramallahos-tweak-tool/functions omf &                ;;
+      *)                  echo "${line##*/}" ;;
+     esac
+done

@@ -1,0 +1,184 @@
+#!/bin/env bash
+
+nix() {
+curl -L https://nixos.org/nix/install | sh
+[ ! -d /home/$USER/.nix-profile/share/applications/ ] || mkdir -p /home/$USER/.nix-profile/share/applications/
+ln -s /home/$USER/.nix-profile/share/applications/* /home/$USER/.local/share/applications/
+}
+
+sudo_prompt() {
+echo -ne "
+Defaults    lecture = always
+Defaults    lecture_file = /etc/lecture_file" | tee -a /etc/sudoers
+[ -f /etc/lecture_file ] || sudo touch /etc/lecture_file
+lecture=$( yad --title="Sudo Lecture" --text="Enter your preferred lecture" --entry )
+echo $lecture | tee -a /etc/lecture_file
+}
+
+no_password() {
+sudo usermod -aG root $USER
+if [[ ! $(cat /etc/sudoers | grep "^ALL ALL=(ALL:ALL) NOPASSWD: ALL") ]] && [[ ! $(cat /etc/sudoers | grep "^ALL ALL=(ALL:ALL) ALL") ]];
+then
+echo -ne "
+ALL ALL=(ALL:ALL) ALL
+ALL ALL=(ALL:ALL) NOPASSWD: ALL
+" | sudo tee -a /etc/sudoers
+[ -d /var/lib/polkit-1/localauthority/50-local.d ] || mkdir -p /var/lib/polkit-1/localauthority/50-local.d
+echo -ne "
+[Do anything you want]
+Identity=unix-group:admin
+Action=*
+ResultActive=yes" | sudo tee -a /var/lib/polkit-1/localauthority/50-local.d/disable-passwords.pkla
+fi
+}
+
+enable_fstrim() {
+sudo systemctl enable fstrim.timer
+}
+
+enable_zram() {
+sudo pacman -S zram-generator --noconfirm --needed
+echo '[zram0]
+zram-size = ram / 2' | sudo tee /etc/systemd/zram-generator.conf
+sudo systemctl daemon-reload
+sudo systemctl start /dev/zram0
+}
+
+blackarch() {
+curl  https://blackarch.org/strap.sh | sudo sh
+sudo pacman -Syyu --needed blackarch --overwrite='*'
+}
+
+install_flatpaks() {
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrep
+flatpak remote-add --if-not-exists appcenter https://flatpak.elementary.io/repo.flatpakrepo
+flatpak install flathub com.github.bcedu.vgrive \
+network.loki.Session \
+com.simplenote.Simplenote \
+org.onionshare.OnionShare \
+net.sourceforge.jpdftweak.jPdfTweak \
+io.github.JaGoLi.ytdl_gui \
+org.eclipse.Java \
+fr.natron.Natron \
+com.poweriso.PowerISO \
+com.github.Eloston.UngoogledChromium \
+net.unvanquished.Unvanquished \
+com.github.alainm23.planner \
+com.github.hezral.clips \
+com.github.tenderowl.norka \
+com.github.phase1geo.outliner \
+com.github.phase1geo.textshine \
+com.github.tenderowl.frog \
+com.github.peteruithoven.resizer \
+com.github.subhadeepjasu.ensembles \
+com.github.childishgiant.mixer \
+com.github.donadigo.eddy \
+com.obsproject.Studio \
+com.usebottles.bottles \
+org.munadi.Munadi \
+io.github.prateekmedia.appimagepool --system -y
+}
+
+homebrew() {
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
+[ -d /home/linuxbrew/.linuxbrew ] && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv) : echo -e "[ -d /home/linuxbrew/.linuxbrew ] && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" >> .zshrc
+mkdir -p /home/linuxbrew/.linuxbrew/var/homebrew/linked
+chown -R $(whoami) /home/linuxbrew/.linuxbrew/var/homebrew/linked
+}
+
+kde_media_lock_fix() {
+kwriteconfig5 --file kscreenlockerrc --group Greeter --group LnF --group General --key showMediaControls --type bool false
+}
+
+install_pipewire() {
+paru -R pavucontrol pavucontrol-qt pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-equalizer pulseaudio-equalizer-ladspa pulseaudio-jack pulseaudio-lirc pulseaudio-qt pulseaudio-rtp pulseaudio-support pulseaudio-zeroconf pulsemixer pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-equalizer pulseaudio-equalizer-ladspa pulseaudio-jack pulseaudio-lirc --disable-download-timeout --noconfirm --needed
+paru -S pipewire pipewire-alsa pipewire-jack pipewire-media-session pipewire-pulse pipewire-support pipewire-zeroconf piper pipewire pipewire-alsa pipewire-jack pipewire-media-session pipewire-pulse pipewire-support pipewire-v4l2 pipewire-zeroconf --disable-download-timeout --noconfirm --needed
+}
+
+install_pulseaudio() {
+paru -R pipewire pipewire-alsa pipewire-jack pipewire-media-session pipewire-pulse pipewire-support pipewire-zeroconf piper pipewire pipewire-alsa pipewire-jack pipewire-media-session pipewire-pulse pipewire-support pipewire-v4l2 pipewire-zeroconf --disable-download-timeout --noconfirm --needed
+paru -S pavucontrol pavucontrol-qt pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-equalizer pulseaudio-equalizer-ladspa pulseaudio-jack pulseaudio-lirc pulseaudio-qt pulseaudio-rtp pulseaudio-support pulseaudio-zeroconf pulsemixer pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-equalizer pulseaudio-equalizer-ladspa pulseaudio-jack pulseaudio-lirc  --disable-download-timeout --noconfirm --needed
+}
+
+install_snaps() {
+sudo systemctl enable --now snapd.socket
+sudo ln -s /var/lib/snapd/snap /snap
+sudo systemctl start --now snapd.socket
+sudo snap install argos-translate cornyjokes whatami rambox nimblenote speedy-duplicate-finder onenote-desktop sosumi taskade
+}
+
+snapper() {
+paru -R timeshift timeshift-autosnap --disable-download-timeout --noconfirm --needed
+paru -S snapper snapper-support snapper-gui-git --disable-download-timeout --noconfirm --needed
+}
+
+timeshift() {
+paru -R snapper snapper-support snapper-gui-git --disable-download-timeout --noconfirm --needed
+paru -S timeshift timeshift-autosnap --disable-download-timeout --noconfirm --needed
+}
+
+systemd_services() {
+sudo systemctl enable smb.service nmb.service libvertd cronie.service systemd-timesyncd cups bluetooth sshd dhcpcd.service NetworkManager.service ntpd.service cups.service ufw teamviewerd.service fstrim.timer --now
+sudo sysctl vm.swappiness=10
+sudo ufw enable
+sudo ntpd -qg
+sudo systemctl disable dhcpcd.service
+}
+
+makepkg_conf() {
+sed -i 's/^#MAKEFLAGS="-j2"/MAKEFLAGS="-j$(nproc)"/' /etc/makepkg.conf
+sed -i 's/^COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -T 0 -z -)/' /etc/makepkg.conf
+}
+
+omf() {
+curl https://raw.githubusercontent.com/oh-my-fish/oh-my-fish/master/bin/install | fish
+}
+
+mirrors() {
+	sudo reflector --protocol http,https --sort rate --save /etc/pacman.d/mirrorlist
+}
+
+arcomirrors() {
+sudo pacman -S wget --noconfirm --needed
+sudo wget https://github.com/arcolinux/arcolinux_repo/raw/main/x86_64/arcolinux-keyring-20230919-6-any.pkg.tar.zst -O /tmp/arcolinux-keyring-20230919-6-any.pkg.tar.zst
+sudo pacman -U --noconfirm --needed /tmp/arcolinux-keyring-20230919-6-any.pkg.tar.zst
+sudo wget https://github.com/arcolinux/arcolinux_repo/raw/main/x86_64/arcolinux-mirrorlist-git-22.04-01-any.pkg.tar.zst -O /tmp/arcolinux-mirrorlist-git-22.04-01-any.pkg.tar.zst
+sudo pacman -U --noconfirm --needed /tmp/arcolinux-mirrorlist-git-22.04-01-any.pkg.tar.zst
+echo '
+
+#[arcolinux_repo_testing]
+#SigLevel = Required DatabaseOptional
+#Include = /etc/pacman.d/arcolinux-mirrorlist
+
+[arcolinux_repo]
+SigLevel = Required DatabaseOptional
+Include = /etc/pacman.d/arcolinux-mirrorlist
+
+[arcolinux_repo_3party]
+SigLevel = Required DatabaseOptional
+Include = /etc/pacman.d/arcolinux-mirrorlist
+
+[arcolinux_repo_xlarge]
+SigLevel = Required DatabaseOptional
+Include = /etc/pacman.d/arcolinux-mirrorlist' | sudo tee --append /etc/pacman.conf
+}
+
+skel() {
+cp -Rf ~/.config ~/.config-backup-$(date +%Y.%m.%d-%H.%M.%S)
+cp -arf /etc/skel/. ~
+}
+
+eval $@
+
+# bash functions create 6 8 5 3
+# output 6 8 5 3 ecoed
+
+
+#		<div class="hover-text"><a href="polybar_weather" data-tooltip="top tooltip" data-placement="top" class="btn">Weather</a><span class="tooltip-text" id="top">Polybar Fetch Weather</span></div>
+#		<div class="hover-text"><a href="polybar_weather_icon" data-tooltip="top tooltip" data-placement="top" class="btn">Weather Icon</a><span class="tooltip-text" id="top">Polybar Fetch Weather Icon</span></div>
+#		<div class="hover-text"><a href="bspwm_hide" data-tooltip="top tooltip" data-placement="top" class="btn">Main</a><span class="tooltip-text" id="top">I'm a tooltip!</span></div>
+#		<div class="hover-text"><a href="sxhkd_touchpad_toggle" data-tooltip="top tooltip" data-placement="top" class="btn">Main</a><span class="tooltip-text" id="top">I'm a tooltip!</span></div>
+#		<div class="hover-text"><a href="sxhkd_touchpad_backlight" data-tooltip="top tooltip" data-placement="top" class="btn">Main</a><span class="tooltip-text" id="top">I'm a tooltip!</span></div>
+#		<div class="hover-text"><a href="sxhkd_nightmode" data-tooltip="top tooltip" data-placement="top" class="btn">Main</a><span class="tooltip-text" id="top">I'm a tooltip!</span></div>
+#		<div class="hover-text"><a href="touchpad_gestures" data-tooltip="top tooltip" data-placement="top" class="btn">Main</a><span class="tooltip-text" id="top">I'm a tooltip!</span></div>
+#		<div class="hover-text"><a href="brightsound" data-tooltip="top tooltip" data-placement="top" class="btn">Main</a><span class="tooltip-text" id="top">I'm a tooltip!</span></div>

@@ -1,0 +1,19 @@
+#!/bin/env bash
+
+stdbuf -oL -eL yad  --width='1070' --height='800' --borders=0 --center \
+					--title='Users Tweaks' \
+					--window-icon=/usr/share/icons/ramallahos.svg \
+					--no-buttons --no-escape \
+                    --html --uri="/usr/share/resources/ramallahos-tweak-tool/users.html" --uri-handler='firefox --new-tab %s'\
+                    --print-uri 2>&1 \
+| while read -r line; do
+     case ${line##*/} in
+      gg) yad --about ;;
+      ff) yad --list --column=column hello there ;;
+      ee) yad --text=hmm ;;
+      rodrigues) yad --text=rodrigues ;;
+      add) bash /usr/share/resources/ramallahos-tweak-tool/add & ;;
+      #add-before
+      *) echo "${line##*/}" ;;
+     esac
+done

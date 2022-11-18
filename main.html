@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Tooltip</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <script src="main.js"></script>
+    <style>
+		@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300&display=swap');
+		
+		*{
+			font-family: 'Sarabun', sans-serif;
+			letter-spacing: 4px;
+			background-color: #25262A;
+		}
+
+		.container {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-evenly;
+			align-items: center;
+			flex-direction: row;
+			text-align: center;
+			min-height: 100vh;
+		}
+
+		.btn {
+			width: 300px;
+			height: 70px;
+			margin-left: 20px;
+			margin-right: 20px;
+			margin-top: 20px;
+			border: none;
+			color: white;
+			background-color: rgb(219, 50, 87);
+			border-radius: 6px;
+            text-align: center;
+            display: block;
+            padding-top: 15px;
+            padding-bottom: 15px;
+            text-decoration: none;
+			box-shadow: inset 0 0 0 0 #fae607;
+			transition: ease-out 0.3s;
+			font-size: 50px;
+			outline: none;
+		}
+
+		.btn:hover {
+			box-shadow: inset 300px 0 0 0 #fae607;
+			cursor: pointer;
+			color: black;
+		}
+
+		h1 {
+			text-align: center;
+			font-size: 70px;
+            font-weight: 900;
+			color: bisque;
+		}
+
+		.tooltip-text {
+			visibility: hidden;
+			position: absolute;
+			z-index: 1;
+			width: 200px;
+			color: rgb(20, 8, 8);
+			font-size: 20px;
+			background-color: bisque;
+			border-radius: 10px;
+			padding: 10px 15px 10px 15px;
+      }
+
+      .hover-text:hover .tooltip-text {
+			visibility: visible;
+      }
+
+      #top {
+			top: -50px;
+			left: 45px;
+      }
+
+      .hover-text {
+			position: relative;
+			display: inline-block;
+			font-family: Avenir;
+			text-align: center;
+      }
+    </style>
+  </head> 
+  <body>
+		<br>
+		<br>
+		<h1>System</h1>
+		<br>
+		<br>
+		<br>
+		<br>
+	<div class="container">
+		<div class="hover-text"><a href="sudo_prompt" data-tooltip="top tooltip" data-placement="top" class="btn">SudoPrmpt</a><span class="tooltip-text" id="top">Customize Sudo Prompt</span></div>
+		<div class="hover-text"><a href="no_password" data-tooltip="top tooltip" data-placement="top" class="btn">Nopasswd</a><span class="tooltip-text" id="top">Never Enter Password Again Unsafe BTW!</span></div>
+		<div class="hover-text"><a href="enable_fstrim" data-tooltip="top tooltip" data-placement="top" class="btn">Fstrim</a><span class="tooltip-text" id="top">Enable Fstrim</span></div>
+		<div class="hover-text"><a href="enable_zram" data-tooltip="top tooltip" data-placement="top" class="btn">Zram</a><span class="tooltip-text" id="top">Enable Zram</span></div>
+		<div class="hover-text"><a href="kde_media_lock_fix" data-tooltip="top tooltip" data-placement="top" class="btn">KDELockFix</a><span class="tooltip-text" id="top">Don't Show Media Controls on Lockscreen</span></div>
+		<div class="hover-text"><a href="systemd_services" data-tooltip="top tooltip" data-placement="top" class="btn">SystmdSrvcs</a><span class="tooltip-text" id="top">Enable Systemd Services</span></div>
+		<div class="hover-text"><a href="makepkg_conf" data-tooltip="top tooltip" data-placement="top" class="btn">Makepkg</a><span class="tooltip-text" id="top">Optimize Makepkg</span></div>
+		<div class="hover-text"><a href="skel" data-tooltip="top tooltip" data-placement="top" class="btn">Skel</a><span class="tooltip-text" id="top">Copy Skel to Home</span></div>
+		<div class="hover-text"><a href="omf" data-tooltip="top tooltip" data-placement="top" class="btn">OMF</a><span class="tooltip-text" id="top">Install Oh My Fish</span></div>
+	</div>
+		<br>
+		<br>
+		<br>
+		<br>
+        <h1>Package Manager</h1>
+        <br>
+        <br>
+        <br>
+        <br>
+    <div class="container">
+		<div class="hover-text"><a href="nix" data-tooltip="top tooltip" data-placement="top" class="btn">Nix</a><span class="tooltip-text" id="top">Install Nix Package Manager</span></div>
+		<div class="hover-text"><a href="homebrew" data-tooltip="top tooltip" data-placement="top" class="btn">Homebrew</a><span class="tooltip-text" id="top">Install Homebrew Package Manager</span></div>
+		<div class="hover-text"><a href="mirrors" data-tooltip="top tooltip" data-placement="top" class="btn">Mirrors</a><span class="tooltip-text" id="top">Update Mirrorlist</span></div>
+		<div class="hover-text"><a href="arcomirrors" data-tooltip="top tooltip" data-placement="top" class="btn">Arcomirrors</a><span class="tooltip-text" id="top">Add Arcolinux Mirrors</span></div>
+		<div class="hover-text"><a href="blackarch" data-tooltip="top tooltip" data-placement="top" class="btn">Blackarch</a><span class="tooltip-text" id="top">Install Blackarch Packages</span></div>
+		<div class="hover-text"><a href="install_flatpaks" data-tooltip="top tooltip" data-placement="top" class="btn">Flatpaks</a><span class="tooltip-text" id="top">Install Recommended Flatpaks</span></div>
+		<div class="hover-text"><a href="install_snaps" data-tooltip="top tooltip" data-placement="top" class="btn">Snaps</a><span class="tooltip-text" id="top">Install Recommended Snaps</span></div>
+		<div class="hover-text"><a href="install_pipewire" data-tooltip="top tooltip" data-placement="top" class="btn">Pipewire</a><span class="tooltip-text" id="top">Install Pipewire and Remove Pulseaudio</span></div>
+		<div class="hover-text"><a href="install_pulseaudio" data-tooltip="top tooltip" data-placement="top" class="btn">Pulseaudio</a><span class="tooltip-text" id="top">Install Pulseaudio and Remove Pipewire</span></div>
+		<div class="hover-text"><a href="snapper" data-tooltip="top tooltip" data-placement="top" class="btn">Snapper</a><span class="tooltip-text" id="top">Install Snapper and Remove Timeshift</span></div>
+		<div class="hover-text"><a href="timeshift" data-tooltip="top tooltip" data-placement="top" class="btn">Timeshift</a><span class="tooltip-text" id="top">Install Timeshift and Remove Snapper</span></div>   
+	</div>
+    <br>
+    <br>
+    <br>
+    <br>
+  </body>
+</html>
