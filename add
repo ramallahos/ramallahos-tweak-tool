@@ -3,7 +3,7 @@
 input=$( yad --width=400 --height=400 \
              --borders=6 --center \
              --title='Add Button' \
-             --window-icon=/usr/share/icons/ramallahos.svg
+             --window-icon=/usr/share/icons/ramallahos.svg \
              --form --field="Title:CE" \
                     --field="Tooltip:CE" \
                     --field="Command:CE" \
