@@ -6,19 +6,17 @@ input=$( yad --width=400 --height=400 \
              --window-icon=/usr/share/icons/ramallahos.svg \
              --form --field="Title:CE" \
                     --field="Tooltip:CE" \
-                    --field="Command:CE" \
                     --field="Function:TXT" )
 
 title=$( echo $input | awk -F "|" '{ print $1 }' )
 tooltip=$( echo $input | awk -F "|" '{ print $2 }' )
-cmd=$( echo $input | awk -F "|" '{ print $3 }' )
-func=$( echo $input | awk -F "|" '{ print $4 }' )
+func=$( echo $input | awk -F "|" '{ print $3 }' )
 
 
-if [[ $input != "||" ]] && [[ $title != "" ]] && [[ $func != "" ]] && [[ $cmd != "" ]] && [[ $tooltip != "" ]];
+if [[ $input != "||" ]] && [[ $title != "" ]] && [[ $func != "" ]] && [[ $tooltip != "" ]];
 then
     sed -i "/<!---->/i \<div class='hover-text'><a href='$title' data-tooltip='top tooltip' data-placement='top' class='btn'>$title</a><span class='tooltip-text' id="top">$tooltip</span></div>" /usr/share/resources/ramallahos-tweak-tool/users.html
     sed -i "/eval \$\@/i \ $title\(\) \{\n$func\\n}\n" /usr/share/resources/ramallahos-tweak-tool/functions
-    sed -i "/\#add-before/i \ $title\) bash \/usr\/share\/resources\/ramallahos-tweak-tool\/functions $cmd ;;" /usr/share/resources/ramallahos-tweak-tool/users
+    sed -i "/\#add-before/i \ $title\) bash \/usr\/share\/resources\/ramallahos-tweak-tool\/functions $title ;;" /usr/share/resources/ramallahos-tweak-tool/users
     notify-send -a "RamallahOS Tweaks" -u low "Restart the App"
 fi
